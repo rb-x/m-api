@@ -1,8 +1,6 @@
 import { Route, Get } from 'tsoa';
 import { Device } from '../models/Device';
 import { DeviceManager } from '../models/DeviceManager';
-import * as r from 'rethinkdb';
-import { getDbConnection } from '../db';
 
 @Route('devices')
 export class DeviceController {

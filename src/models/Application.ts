@@ -10,4 +10,14 @@ export class Application {
       this.location = location;
       // Initialize other properties here...
     }
+    
+}
+
+export class FridaApplication extends Application {
+  pid: number;
+
+  constructor(id: string, packageName: string, location: string, pid: number) {
+      super(id, packageName, location);
+      this.pid = pid;
+  }
 }

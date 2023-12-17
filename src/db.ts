@@ -31,3 +31,11 @@ export async function getDbConnection() {
     }
     return connection;
 }
+
+export async function closeDbConnection() {
+    if (connection) {
+        await connection.close();
+        connection = null;
+        console.log('Closed connection to RethinkDB');
+    }
+}

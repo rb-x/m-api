@@ -36,6 +36,17 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "FridaApplication": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"dataType":"string","required":true},
+            "packageName": {"dataType":"string","required":true},
+            "location": {"dataType":"string","required":true},
+            "pid": {"dataType":"double","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
 const validationService = new ValidationService(models);
 
@@ -268,6 +279,56 @@ export function RegisterRoutes(app: Router) {
 
 
               const promise = controller.inject.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/devices/:deviceId/frida/spawn',
+            ...(fetchMiddlewares<RequestHandler>(FridaController)),
+            ...(fetchMiddlewares<RequestHandler>(FridaController.prototype.spawnApplicationByPackageName)),
+
+            function FridaController_spawnApplicationByPackageName(request: any, response: any, next: any) {
+            const args = {
+                    body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"packageName":{"dataType":"string","required":true},"deviceId":{"dataType":"string","required":true}}},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new FridaController();
+
+
+              const promise = controller.spawnApplicationByPackageName.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/devices/:deviceId/frida/spawnAndInject',
+            ...(fetchMiddlewares<RequestHandler>(FridaController)),
+            ...(fetchMiddlewares<RequestHandler>(FridaController.prototype.spawnAndInject)),
+
+            function FridaController_spawnAndInject(request: any, response: any, next: any) {
+            const args = {
+                    body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"b64EncodedScript":{"dataType":"string","required":true},"packageName":{"dataType":"string","required":true},"deviceId":{"dataType":"string","required":true}}},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new FridaController();
+
+
+              const promise = controller.spawnAndInject.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);

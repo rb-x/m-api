@@ -49,6 +49,31 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"FridaApplication": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"packageName": {
+						"type": "string"
+					},
+					"location": {
+						"type": "string"
+					},
+					"pid": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"id",
+					"packageName",
+					"location",
+					"pid"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -317,8 +342,18 @@
 			"get": {
 				"operationId": "GetApplications",
 				"responses": {
-					"204": {
-						"description": "No content"
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/FridaApplication"
+									},
+									"type": "array"
+								}
+							}
+						}
 					}
 				},
 				"security": [],
@@ -368,6 +403,114 @@
 						}
 					}
 				]
+			}
+		},
+		"/devices/{deviceId}/frida/spawn": {
+			"post": {
+				"operationId": "SpawnApplicationByPackageName",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{},
+										{
+											"additionalProperties": false,
+											"type": "object"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"packageName": {
+										"type": "string"
+									},
+									"deviceId": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"packageName",
+									"deviceId"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/devices/{deviceId}/frida/spawnAndInject": {
+			"post": {
+				"operationId": "SpawnAndInject",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"b64DecodedFridaScript": {
+											"type": "string"
+										},
+										"packageName": {
+											"type": "string"
+										},
+										"deviceId": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"b64DecodedFridaScript",
+										"packageName",
+										"deviceId"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"b64EncodedScript": {
+										"type": "string"
+									},
+									"packageName": {
+										"type": "string"
+									},
+									"deviceId": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"b64EncodedScript",
+									"packageName",
+									"deviceId"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
 			}
 		}
 	},

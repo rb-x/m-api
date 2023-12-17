@@ -3,9 +3,6 @@ import { AdbManager } from './AdbManager';
 import { Device } from './Device';
 import * as r from 'rethinkdb';
 import { getDbConnection } from '../db';
-import { v4 as uuidv4 } from 'uuid';
-import { generateHashForDevice } from '../utils/hash';
-
 
 export class DeviceManager {
     fridaManager: FridaManager = new FridaManager();
@@ -26,7 +23,7 @@ export class DeviceManager {
             for (const device of devices) {
                 const deviceWithHashAsId = { ...device, id: device.hash };
                 const result = await r.table('devices').insert(deviceWithHashAsId, { conflict: "update" }).run(connection);
-                console.log(`Inserted/updated device ${device.id} in the database: ${JSON.stringify(result)}`);
+             //   console.log(`Inserted/updated device ${device.id} in the database: ${JSON.stringify(result)}`);
             }
         }
         return devices;
