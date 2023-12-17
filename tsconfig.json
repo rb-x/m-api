@@ -7,11 +7,17 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "typeRoots": ["./node_modules/@types", "./types"]
   },
   "include": [
     "src/**/*",
     "typings.d.ts"
   ],
+  "baseUrl": ".", // This must be specified if "paths" is.
+  "paths": {
+    "@routes" : ["src/routes/*"]
+  },
   "exclude": ["node_modules"]
 }
