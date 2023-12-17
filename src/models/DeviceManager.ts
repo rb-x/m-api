@@ -5,19 +5,19 @@ import * as r from 'rethinkdb';
 import { getDbConnection } from '../db';
 
 export class DeviceManager {
+    static FRIDA_SERVER_DIR = "/data/local/tmp"
     fridaManager: FridaManager = new FridaManager();
     adbManager: AdbManager = new AdbManager();
 
     async initialize() {
-        await this.fridaManager.initialize();
+        // await this.fridaManager.initialize();
         await this.adbManager.initialize();
     }
 
     async getDevices(): Promise<Device[]> {
-        const fridaDevices = this.fridaManager.devices;
         const adbDevices = await this.adbManager.getDevices();
-        const devices = [...adbDevices, ...fridaDevices];
-    
+        const devices = [...adbDevices];
+
         const connection = await getDbConnection();
         if (connection) {
             for (const device of devices) {
@@ -39,6 +39,10 @@ export class DeviceManager {
         return null;
     }
 
-    private deviceIdsToUuids: Map<string, string> = new Map();
+    async getFridaVersion(deviceId:string) : Promise<{ installed: boolean, version?: string, architecture?: string, location?: string }> {
+       return this.adbManager.getFridaServerInfo(deviceId)
+    }
+
+
 
 }

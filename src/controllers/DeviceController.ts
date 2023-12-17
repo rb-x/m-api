@@ -13,9 +13,24 @@ export class DeviceController {
         return devices;
     }
 
-    @Get('{id}')
-    public async getDeviceById(id: string): Promise<Device | null> {
-        return this.deviceManager.getDeviceById(id) || null;
+    @Get('{deviceId}')
+    public async getDeviceById(deviceId: string): Promise<Device | null> {
+        return this.deviceManager.getDeviceById(deviceId) || null;
+    }
+
+    @Get('/{deviceId}/fridaVersion')
+    public async getFridaVersion(deviceId: string): Promise<{ installed: boolean, version?: string, architecture?: string, location?: string }> {
+        return this.deviceManager.getFridaVersion(deviceId);
+    }
+
+    @Get('/{deviceId}/startFridaServer')
+    public async startFridaServer(deviceId: string): Promise<{ pid?: number, location?: string }> {
+        return this.deviceManager.adbManager.startFridaServer(deviceId);
+    }
+
+    @Get('/{deviceId}/killFridaServer')
+    public async killFridaServer(deviceId: string): Promise<{ pid?: number }> {
+        return this.deviceManager.adbManager.killFridaServer(deviceId);
     }
 
 }

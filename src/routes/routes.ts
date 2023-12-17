@@ -209,13 +209,13 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/devices/:id',
+        app.get('/devices/:deviceId',
             ...(fetchMiddlewares<RequestHandler>(DeviceController)),
             ...(fetchMiddlewares<RequestHandler>(DeviceController.prototype.getDeviceById)),
 
             function DeviceController_getDeviceById(request: any, response: any, next: any) {
             const args = {
-                    id: {"in":"path","name":"id","required":true,"dataType":"string"},
+                    deviceId: {"in":"path","name":"deviceId","required":true,"dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -228,6 +228,81 @@ export function RegisterRoutes(app: Router) {
 
 
               const promise = controller.getDeviceById.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/devices/:deviceId/fridaVersion',
+            ...(fetchMiddlewares<RequestHandler>(DeviceController)),
+            ...(fetchMiddlewares<RequestHandler>(DeviceController.prototype.getFridaVersion)),
+
+            function DeviceController_getFridaVersion(request: any, response: any, next: any) {
+            const args = {
+                    deviceId: {"in":"path","name":"deviceId","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new DeviceController();
+
+
+              const promise = controller.getFridaVersion.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/devices/:deviceId/startFridaServer',
+            ...(fetchMiddlewares<RequestHandler>(DeviceController)),
+            ...(fetchMiddlewares<RequestHandler>(DeviceController.prototype.startFridaServer)),
+
+            function DeviceController_startFridaServer(request: any, response: any, next: any) {
+            const args = {
+                    deviceId: {"in":"path","name":"deviceId","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new DeviceController();
+
+
+              const promise = controller.startFridaServer.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/devices/:deviceId/killFridaServer',
+            ...(fetchMiddlewares<RequestHandler>(DeviceController)),
+            ...(fetchMiddlewares<RequestHandler>(DeviceController.prototype.killFridaServer)),
+
+            function DeviceController_killFridaServer(request: any, response: any, next: any) {
+            const args = {
+                    deviceId: {"in":"path","name":"deviceId","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new DeviceController();
+
+
+              const promise = controller.killFridaServer.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
