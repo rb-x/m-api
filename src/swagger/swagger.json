@@ -454,6 +454,42 @@
 				]
 			}
 		},
+		"/devices/{deviceId}/installFridaServer": {
+			"get": {
+				"operationId": "InstallFridaServer",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"location": {
+											"type": "string"
+										},
+										"installed": {
+											"type": "boolean"
+										}
+									},
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "deviceId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
 		"/devices/{deviceId}/frida/getApplications": {
 			"get": {
 				"operationId": "GetApplications",

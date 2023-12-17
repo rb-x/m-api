@@ -33,4 +33,9 @@ export class DeviceController {
         return this.deviceManager.adbManager.killFridaServer(deviceId);
     }
 
+    @Get('/{deviceId}/installFridaServer')
+    public async installFridaServer(deviceId: string): Promise<{ installed?: boolean, location?: string }> {
+        return this.deviceManager.installLatestFrida(deviceId);
+    }
+
 }

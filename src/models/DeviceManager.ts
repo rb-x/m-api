@@ -23,7 +23,7 @@ export class DeviceManager {
             for (const device of devices) {
                 const deviceWithHashAsId = { ...device, id: device.hash };
                 const result = await r.table('devices').insert(deviceWithHashAsId, { conflict: "update" }).run(connection);
-             //   console.log(`Inserted/updated device ${device.id} in the database: ${JSON.stringify(result)}`);
+                //   console.log(`Inserted/updated device ${device.id} in the database: ${JSON.stringify(result)}`);
             }
         }
         return devices;
@@ -39,10 +39,11 @@ export class DeviceManager {
         return null;
     }
 
-    async getFridaVersion(deviceId:string) : Promise<{ installed: boolean, version?: string, architecture?: string, location?: string }> {
-       return this.adbManager.getFridaServerInfo(deviceId)
+    async getFridaVersion(deviceId: string): Promise<{ installed: boolean, version?: string, architecture?: string, location?: string }> {
+        return this.adbManager.getFridaServerInfo(deviceId);
     }
 
-
-
+    async installLatestFrida(deviceId: string): Promise<{ installed?: boolean, location?: string }> {
+        return this.adbManager.installFridaServer(deviceId);
+    }
 }

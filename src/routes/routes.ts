@@ -309,6 +309,31 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/devices/:deviceId/installFridaServer',
+            ...(fetchMiddlewares<RequestHandler>(DeviceController)),
+            ...(fetchMiddlewares<RequestHandler>(DeviceController.prototype.installFridaServer)),
+
+            function DeviceController_installFridaServer(request: any, response: any, next: any) {
+            const args = {
+                    deviceId: {"in":"path","name":"deviceId","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new DeviceController();
+
+
+              const promise = controller.installFridaServer.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/devices/:deviceId/frida/getApplications',
             ...(fetchMiddlewares<RequestHandler>(FridaController)),
             ...(fetchMiddlewares<RequestHandler>(FridaController.prototype.getApplications)),

@@ -3,7 +3,9 @@ import { Device } from './Device';
 import { Application } from './Application';
 import { generateHashForDevice } from '../utils/hash';
 import bb from 'bluebird'
-import { Duplex } from 'stream';
+import { Duplex, PassThrough, Readable } from 'stream';
+
+
 
 export class AdbManager {
     client: Client = adb.createClient();
@@ -71,15 +73,15 @@ export class AdbManager {
 
     async getFridaServerInfo(deviceId: string): Promise<{ installed: boolean, version?: string, architecture?: string, location?: string, isRunning?: boolean }> {
         const device: DeviceClient = await this.client.getDevice(deviceId);
-    
+
         // Get the architecture of the device
         const architecture = await device.shell('getprop ro.product.cpu.abi')
             .then(adb.util.readAll)
             .then(output => output.toString().trim());
-    
+
         // List the files in the /data/local/tmp directory
         const files = await device.readdir('data/local/tmp');
-    
+
         // Find the frida-server file
         const fridaServerFile = files.find(file => {
             if (file.isFile()) {
@@ -88,17 +90,17 @@ export class AdbManager {
             }
             return false;
         });
-    
+
         if (fridaServerFile) {
             const [, , version] = fridaServerFile.name.split('-');
             const location = `/data/local/tmp/${fridaServerFile.name}`;
-    
+
             // Check if the Frida process is running
             const fridaProcess = await device.shell('pgrep -f frida-server')
                 .then(adb.util.readAll)
                 .then(output => output.toString().trim());
             const isRunning = fridaProcess.length > 0;
-    
+
             return { installed: true, version, architecture, location, isRunning };
         } else {
             return { installed: false };
@@ -121,9 +123,11 @@ export class AdbManager {
         await device.shell(`chmod 755 ${fridaServerInfo.location}`);
 
         // Start Frida Server
-        const fridaServerStart = await device.shell(`nohup ${fridaServerInfo.location}&; echo $!`)
+        const fridaServerStart = await device.shell(`nohup ${fridaServerInfo.location}&`)
+
             .then(adb.util.readAll)
             .then(output => output.toString().trim());
+        console.log(fridaServerStart)
 
         // Get the PID of the Frida Server process
         const pid = parseInt(fridaServerStart);
@@ -152,7 +156,74 @@ export class AdbManager {
         return { pid };
     }
 
+    async installFridaServer(deviceId: string): Promise<{ installed?: boolean, location?: string }> {
+        const device: DeviceClient = await this.client.getDevice(deviceId);
 
+        // Check if Frida Server is installed
+        const fridaServerInfo = await this.getFridaServerInfo(deviceId);
+        if (fridaServerInfo.installed) {
+            return { installed: true, location: fridaServerInfo.location };
+        }
+
+        // Get the architecture of the device
+        const architecture = await device.shell('getprop ro.product.cpu.abi')
+            .then(adb.util.readAll)
+            .then(output => output.toString().trim());
+
+        // Map the architecture to the corresponding Frida Server architecture
+        const archMap: { [key: string]: string } = {
+            'armeabi-v7a': 'arm',
+            'arm64-v8a': 'arm64',
+            'x86': 'x86',
+            'x86_64': 'x86_64'
+        };
+        const fridaArch: string = archMap[architecture]
+
+        if (!fridaArch) {
+            throw new Error(`Unsupported architecture: ${architecture}`);
+        }
+
+        // Get the latest Frida Server version
+        const response = await fetch('https://github.com/frida/frida');
+        const html = await response.text();
+        const versionMatch = html.match(/releases\/tag\/([^\"]*)\"/);
+        const version = versionMatch ? versionMatch[1] : null;
+
+        if (!version) {
+            throw new Error('Failed to get the latest Frida Server version');
+        }
+
+        // Download Frida Server
+        const fridaServerUrl = `https://github.com/frida/frida/releases/download/${version}/frida-server-${version}-android-${fridaArch}.xz`;
+        console.log(fridaServerUrl)
+        const fridaServerResponse = await fetch(fridaServerUrl);
+
+        const fridaServerBuffer = await fridaServerResponse.arrayBuffer();
+
+        // Convert ArrayBuffer to Buffer
+        const fridaServerBufferNode = Buffer.from(fridaServerBuffer);
+
+        // Create a PassThrough stream and write the Buffer to it
+        const fridaServerStream = new PassThrough();
+        fridaServerStream.end(fridaServerBufferNode);
+
+        // Upload compressed Frida Server to the device
+        const fridaServerPathOnDevice = `/data/local/tmp/frida-server-${version}-android-${fridaArch}.xz`;
+        const pushFridaServerToDevice = await device.push(fridaServerStream, fridaServerPathOnDevice);
+        await new Promise((resolve, reject) => {
+            pushFridaServerToDevice.on('end', resolve);
+            pushFridaServerToDevice.on('error', reject);
+        });
+
+        // Decompress Frida Server on the device
+        await device.shell(`xz -d ${fridaServerPathOnDevice}`);
+        const decompressedFridaServerPathOnDevice = fridaServerPathOnDevice.replace('.xz', '');
+
+        // Set the permissions of the Frida Server
+        await device.shell(`chmod 755 ${decompressedFridaServerPathOnDevice}`);
+
+        return { installed: true, location: decompressedFridaServerPathOnDevice };
+    }
 
 
 }
